@@ -3,40 +3,95 @@
 <head>
   <title>Smart Plant Monitor</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
+<!-- ================= MAIN PAGE ================= -->
+<div id="mainPage">
+
   <h1>🌸 Smart Plant Monitoring System</h1>
+  <p class="subtitle">Real-time plant health monitoring</p>
 
-
+  <!-- CARDS -->
   <div class="container">
 
     <div class="card">
-      <h2>Soil Moisture</h2>
+      <h2>🌱 Soil Moisture</h2>
       <p id="soil">Loading...</p>
     </div>
 
     <div class="card">
-      <h2>Temperature</h2>
+      <h2>🌡 Temperature</h2>
       <p id="temp">Loading...</p>
     </div>
 
     <div class="card">
-      <h2>Humidity</h2>
+      <h2>💧 Humidity</h2>
       <p id="hum">Loading...</p>
     </div>
 
-    <!-- NEW FIELD -->
-    <div class="card">
-      <h2>Plant Status</h2>
+    <div class="card status-card">
+      <h2>🌿 Plant Status</h2>
       <p id="status">Loading...</p>
     </div>
 
   </div>
 
-  <script src="script.js"></script>
+  <!-- INSIGHT -->
+  <div class="insight">
+    <p id="condition">🌿 Current Condition: Loading...</p>
+    <p id="updated">⏱ Last Updated: --</p>
+  </div>
+
+  <!-- ALERT -->
+  <div id="alertBox" class="alert"></div>
+
+  <!-- BUTTON -->
+  <button class="nav-btn" onclick="goToDetails()">
+    View Detailed Analysis →
+  </button>
+
+</div>
+
+<!-- ================= SECOND PAGE ================= -->
+<div id="detailsPage" style="display:none;">
+
+  <h2>📊 Plant Analysis Dashboard</h2>
+  <p>View plant condition trends and get smart suggestions</p>
+
+  <!-- BUTTONS -->
+  <div class="buttons">
+    <button onclick="showGraph('soil')">Soil</button>
+    <button onclick="showGraph('temp')">Temperature</button>
+    <button onclick="showGraph('hum')">Humidity</button>
+    <button onclick="showGraph('health')">Overall</button>
+  </div>
+
+  <!-- GRAPH AREA -->
+  <div id="graphArea" style="margin-top:20px;">
+    <p>Select a parameter to view graph</p>
+  </div>
+
+  <!-- VALUE -->
+  <div id="valueArea" style="margin-top:20px; font-size:18px;"></div>
+
+  <!-- SUGGESTION -->
+  <div id="suggestionArea" style="margin-top:20px; font-weight:bold; color:#6a1b9a;"></div>
+
+  <!-- BACK BUTTON -->
+  <button onclick="goHome()" style="margin-top:20px;">
+    ← Back to Home
+  </button>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
+
+
+
 
