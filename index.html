@@ -14,9 +14,7 @@
   <h1>🌸 Smart Plant Monitoring System</h1>
   <p class="subtitle">Real-time plant health monitoring</p>
 
-  <!-- CARDS -->
   <div class="container">
-
     <div class="card">
       <h2>🌱 Soil Moisture</h2>
       <p id="soil">Loading...</p>
@@ -36,32 +34,25 @@
       <h2>🌿 Plant Status</h2>
       <p id="status">Loading...</p>
     </div>
-
   </div>
 
-  <!-- INSIGHT -->
   <div class="insight">
     <p id="condition">🌿 Current Condition: Loading...</p>
     <p id="updated">⏱ Last Updated: --</p>
   </div>
 
-  <!-- ALERT -->
   <div id="alertBox" class="alert"></div>
 
-  <!-- BUTTON -->
-  <button class="nav-btn" onclick="goToDetails()">
-    View Detailed Analysis →
-  </button>
+  <button class="nav-btn" onclick="goToDetails()">View Analysis →</button>
+  <button class="nav-btn" onclick="goToControl()">Control Pump →</button>
 
 </div>
 
 <!-- ================= SECOND PAGE ================= -->
 <div id="detailsPage" style="display:none;">
 
-  <h2>📊 Plant Analysis Dashboard</h2>
-  <p>View plant condition trends and get smart suggestions</p>
+  <h2>📊 Plant Analysis</h2>
 
-  <!-- BUTTONS -->
   <div class="buttons">
     <button onclick="showGraph('soil')">Soil</button>
     <button onclick="showGraph('temp')">Temperature</button>
@@ -69,21 +60,27 @@
     <button onclick="showGraph('health')">Overall</button>
   </div>
 
-  <!-- GRAPH AREA -->
-  <div id="graphArea" style="margin-top:20px;">
-    <p>Select a parameter to view graph</p>
+  <div id="graphArea"></div>
+  <div id="valueArea"></div>
+  <div id="suggestionArea"></div>
+
+  <button onclick="goHome()">← Back</button>
+
+</div>
+
+<!-- ================= THIRD PAGE ================= -->
+<div id="controlPage" style="display:none;">
+
+  <h2>🚰 Pump Control</h2>
+
+  <div class="buttons">
+    <button onclick="turnPumpOn()">💧 Turn ON</button>
+    <button onclick="turnPumpOff()">⛔ Turn OFF</button>
   </div>
 
-  <!-- VALUE -->
-  <div id="valueArea" style="margin-top:20px; font-size:18px;"></div>
+  <h3 id="pumpStatus">Status: --</h3>
 
-  <!-- SUGGESTION -->
-  <div id="suggestionArea" style="margin-top:20px; font-weight:bold; color:#6a1b9a;"></div>
-
-  <!-- BACK BUTTON -->
-  <button onclick="goHome()" style="margin-top:20px;">
-    ← Back to Home
-  </button>
+  <button onclick="goHome()">← Back</button>
 
 </div>
 
