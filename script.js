@@ -1,11 +1,11 @@
 // ================= CONFIG =================
-const CHANNEL_ID = "YOUR_CHANNEL_ID";
-const WRITE_API_KEY = "YOUR_WRITE_API_KEY";
+const CHANNEL_ID = "273306227";
+const WRITE_API_KEY = "F261E1E08O9YKNNU";
 
 // ================= FETCH DATA =================
 async function getData() {
   try {
-    let res = await fetch(`https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json`);
+    let res = await fetch(`https://api.thingspeak.com/channels/${273306227}/feeds/last.json`);
     let data = await res.json();
 
     let soil = parseInt(data.field1);
@@ -94,7 +94,7 @@ function showGraph(type) {
 
     graph.innerHTML = `
       <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${CHANNEL_ID}/charts/1">
+      src="https://thingspeak.com/channels/${273306227}/charts/1">
       </iframe>
     `;
 
@@ -122,7 +122,7 @@ function showGraph(type) {
 
     graph.innerHTML = `
       <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${CHANNEL_ID}/charts/2">
+      src="https://thingspeak.com/channels/${273306227}/charts/2">
       </iframe>
     `;
 
@@ -150,7 +150,7 @@ function showGraph(type) {
 
     graph.innerHTML = `
       <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${CHANNEL_ID}/charts/3">
+      src="https://thingspeak.com/channels/${273306227}/charts/3">
       </iframe>
     `;
 
@@ -205,12 +205,12 @@ function showGraph(type) {
 
 // ================= PUMP CONTROL =================
 function turnPumpOn() {
-  fetch(`https://api.thingspeak.com/update?api_key=${WRITE_API_KEY}&field4=1`);
+  fetch(`https://api.thingspeak.com/update?api_key=${F261E1E08O9YKNNU}&field4=1`);
   document.getElementById("pumpStatus").innerText = "Status: ON 💧";
 }
 
 function turnPumpOff() {
-  fetch(`https://api.thingspeak.com/update?api_key=${WRITE_API_KEY}&field4=0`);
+  fetch(`https://api.thingspeak.com/update?api_key=${F261E1E08O9YKNNU}&field4=0`);
   document.getElementById("pumpStatus").innerText = "Status: OFF ⛔";
 }
 
