@@ -1,90 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Smart Plant Monitor</title>
+  <title>Smart Plant Monitoring</title>
   <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
-<!-- ================= MAIN PAGE ================= -->
-<div id="mainPage">
+  <h1>🌱 Smart Plant Monitoring System</h1>
 
-  <h1>🌸 Smart Plant Monitoring System</h1>
-  <p class="subtitle">Real-time plant health monitoring</p>
+  <!-- SENSOR CARDS -->
+  <div class="card-container">
 
-  <div class="container">
     <div class="card">
-      <h2>🌱 Soil Moisture</h2>
-      <p id="soil">Loading...</p>
+      <h2>Soil Moisture</h2>
+      <p id="soil">--</p>
     </div>
 
     <div class="card">
-      <h2>🌡 Temperature</h2>
-      <p id="temp">Loading...</p>
+      <h2>Temperature</h2>
+      <p id="temp">--</p>
     </div>
 
     <div class="card">
-      <h2>💧 Humidity</h2>
-      <p id="hum">Loading...</p>
+      <h2>Humidity</h2>
+      <p id="hum">--</p>
     </div>
 
-    <div class="card status-card">
-      <h2>🌿 Plant Status</h2>
-      <p id="status">Loading...</p>
+  </div>
+
+  <!-- HEALTH CARD -->
+  <div class="health-card premium">
+    <h2>🌿 Plant Health</h2>
+
+    <div class="progress-circle">
+      <span id="healthScore">0%</span>
     </div>
+
+    <p id="healthStatus">Checking...</p>
   </div>
 
-  <div class="insight">
-    <p id="condition">🌿 Current Condition: Loading...</p>
-    <p id="updated">⏱ Last Updated: --</p>
+  <!-- PREDICTION -->
+  <div class="prediction-box">
+    <h3>📈 Future Prediction</h3>
+    <p id="prediction">Loading...</p>
   </div>
 
-  <div id="alertBox" class="alert"></div>
+  <!-- PUMP CONTROL -->
+  <div class="pump-control">
+    <h2>🚰 Pump Control</h2>
 
-  <button class="nav-btn" onclick="goToDetails()">View Analysis →</button>
-  <button class="nav-btn" onclick="goToControl()">Control Pump →</button>
+    <button id="pumpBtn" onclick="togglePump()">Turn ON</button>
 
-</div>
-
-<!-- ================= SECOND PAGE ================= -->
-<div id="detailsPage" style="display:none;">
-
-  <h2>📊 Plant Analysis</h2>
-
-  <div class="buttons">
-    <button onclick="showGraph('soil')">Soil</button>
-    <button onclick="showGraph('temp')">Temperature</button>
-    <button onclick="showGraph('hum')">Humidity</button>
-    <button onclick="showGraph('health')">Overall</button>
+    <p id="pumpStatus">Status: OFF ❌</p>
   </div>
 
-  <div id="graphArea"></div>
-  <div id="valueArea"></div>
-  <div id="suggestionArea"></div>
+  <!-- ALERT -->
+  <div id="customAlert" class="alert-box"></div>
 
-  <button onclick="goHome()">← Back</button>
-
-</div>
-
-<!-- ================= THIRD PAGE ================= -->
-<div id="controlPage" style="display:none;">
-
-  <h2>🚰 Pump Control</h2>
-
-  <div class="buttons">
-    <button onclick="turnPumpOn()">💧 Turn ON</button>
-    <button onclick="turnPumpOff()">⛔ Turn OFF</button>
-  </div>
-
-  <h3 id="pumpStatus">Status: --</h3>
-
-  <button onclick="goHome()">← Back</button>
-
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>

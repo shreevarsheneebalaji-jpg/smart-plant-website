@@ -1,216 +1,115 @@
-// ================= CONFIG =================
-const CHANNEL_ID = "273306227";
-const WRITE_API_KEY = "F261E1E08O9YKNNU";
+// ===== CONFIG =====
+const channelID = "273306227";
+const readAPI = "3637PZ8RYHJMV7G1";
+const writeAPI = "F261E1E08O9YKNNU";
 
-// ================= FETCH DATA =================
+// ===== ELEMENTS =====
+const soilValue = document.getElementById("soil");
+const tempValue = document.getElementById("temp");
+const humValue = document.getElementById("hum");
+const predictionText = document.getElementById("prediction");
+
+let alertShown = false;
+let pumpOn = false;
+
+// ===== FETCH DATA =====
 async function getData() {
-  try {
-    let res = await fetch(`https://api.thingspeak.com/channels/${273306227}/feeds/last.json`);
-    let data = await res.json();
+  const res = await fetch(
+    `https://api.thingspeak.com/channels/${273306227}/feeds.json?api_key=${F261E1E08O9YKNNU}&results=5`
+  );
 
-    let soil = parseInt(data.field1);
-    let temp = parseFloat(data.field2);
-    let hum = parseFloat(data.field3);
+  const data = await res.json();
+  const feeds = data.feeds;
+  let latest = feeds[feeds.length - 1];
 
-    // Display values
-    document.getElementById("soil").innerText = soil;
-    document.getElementById("temp").innerText = temp + " °C";
-    document.getElementById("hum").innerText = hum + " %";
+  let soil = Number(latest.field1);
+  let temp = Number(latest.field2);
+  let hum = Number(latest.field3);
 
-    // ===== Plant Status =====
-    let status = "";
-    let condition = "";
-    let alertMsg = "";
+  soilValue.innerText = soil;
+  tempValue.innerText = temp;
+  humValue.innerText = hum;
 
-    if (soil > 700) {
-      status = "💧 Needs Water";
-      condition = "Dry";
-      alertMsg = "⚠️ Soil is too dry!";
-    }
-    else if (soil >= 400) {
-      status = "🌿 Healthy";
-      condition = "Good";
-      alertMsg = "";
-    }
-    else {
-      status = "⚠️ Overwatered";
-      condition = "Too Wet";
-      alertMsg = "⚠️ Too much water!";
-    }
+  // HEALTH
+  let health = 0;
+  if (soil >= 400 && soil <= 700) health += 40;
+  if (temp >= 20 && temp <= 35) health += 30;
+  if (hum >= 40 && hum <= 70) health += 30;
 
-    document.getElementById("status").innerText = status;
-    document.getElementById("condition").innerText = "🌿 Current Condition: " + condition;
-    document.getElementById("alertBox").innerText = alertMsg;
+  document.getElementById("healthScore").innerText = health + "%";
 
-    let now = new Date();
-    document.getElementById("updated").innerText =
-      "⏱ Last Updated: " + now.toLocaleTimeString();
+  document.querySelector(".progress-circle").style.background =
+    `conic-gradient(#4caf50 ${health}%, #ddd ${health}%)`;
 
-  } catch (error) {
-    console.log("Error:", error);
+  // BACKGROUND
+  if (soil > 700) {
+    document.body.style.background =
+      "linear-gradient(to right, #ff9a9e, #fecfef)";
+  } else if (soil < 400) {
+    document.body.style.background =
+      "linear-gradient(to right, #a1c4fd, #c2e9fb)";
+  } else {
+    document.body.style.background =
+      "linear-gradient(to right, #d4fc79, #96e6a1)";
+  }
+
+  // ALERT
+  if (soil > 700 && !alertShown) {
+    showAlert("⚠️ Soil is too dry!");
+    alertShown = true;
+  }
+  if (soil <= 700) alertShown = false;
+
+  // PREDICTION
+  if (feeds.length >= 3) {
+    let trend = Number(feeds[0].field1) - Number(feeds[2].field1);
+
+    if (trend > 50)
+      predictionText.innerText = "⚠️ Soil drying fast!";
+    else if (trend < -50)
+      predictionText.innerText = "💧 Soil getting wet!";
+    else
+      predictionText.innerText = "✅ Stable condition";
   }
 }
 
-// Run continuously
-setInterval(getData, 5000);
+// ===== ALERT FUNCTION =====
+function showAlert(msg) {
+  let box = document.getElementById("customAlert");
+  box.innerText = msg;
+  box.style.display = "block";
+  setTimeout(() => (box.style.display = "none"), 3000);
+}
+
+// ===== PUMP CONTROL =====
+function togglePump() {
+  pumpOn = !pumpOn;
+
+  let btn = document.getElementById("pumpBtn");
+  let status = document.getElementById("pumpStatus");
+
+  if (pumpOn) {
+    btn.innerText = "Turn OFF";
+    btn.classList.remove("off");
+    status.innerText = "Status: ON ✅";
+    sendPump(1);
+  } else {
+    btn.innerText = "Turn ON";
+    btn.classList.add("off");
+    status.innerText = "Status: OFF ❌";
+    sendPump(0);
+  }
+}
+
+function sendPump(val) {
+  fetch(
+    `https://api.thingspeak.com/update?api_key=${F261E1E08O9YKNNU}&field4=${val}`
+  );
+}
+
+// ===== AUTO REFRESH =====
+setInterval(getData, 10000);
 getData();
 
 
-// ================= NAVIGATION =================
-function goToDetails() {
-  document.getElementById("mainPage").style.display = "none";
-  document.getElementById("detailsPage").style.display = "block";
-  document.getElementById("controlPage").style.display = "none";
-}
-
-function goToControl() {
-  document.getElementById("mainPage").style.display = "none";
-  document.getElementById("detailsPage").style.display = "none";
-  document.getElementById("controlPage").style.display = "block";
-}
-
-function goHome() {
-  document.getElementById("mainPage").style.display = "block";
-  document.getElementById("detailsPage").style.display = "none";
-  document.getElementById("controlPage").style.display = "none";
-}
-
-
-// ================= GRAPH + ANALYSIS =================
-function showGraph(type) {
-
-  let graph = document.getElementById("graphArea");
-  let value = document.getElementById("valueArea");
-  let suggestion = document.getElementById("suggestionArea");
-
-  // Reset animation
-  graph.classList.remove("fade-in");
-  value.classList.remove("fade-in");
-  suggestion.classList.remove("fade-in");
-  void graph.offsetWidth;
-
-  // ===== SOIL =====
-  if (type === "soil") {
-
-    graph.innerHTML = `
-      <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${273306227}/charts/1">
-      </iframe>
-    `;
-
-    let soil = parseInt(document.getElementById("soil").innerText);
-
-    if (soil > 700) {
-      value.innerHTML = `🔢 Soil: ${soil} <br> 📍 Status: Dry`;
-      suggestion.innerHTML = "💧 Water the plant";
-      suggestion.style.background = "#ffcdd2";
-    }
-    else if (soil >= 400) {
-      value.innerHTML = `🔢 Soil: ${soil} <br> 📍 Status: Good`;
-      suggestion.innerHTML = "✅ No suggestion needed";
-      suggestion.style.background = "#c8e6c9";
-    }
-    else {
-      value.innerHTML = `🔢 Soil: ${soil} <br> 📍 Status: Too Wet`;
-      suggestion.innerHTML = "⚠️ Reduce watering";
-      suggestion.style.background = "#bbdefb";
-    }
-  }
-
-  // ===== TEMPERATURE =====
-  else if (type === "temp") {
-
-    graph.innerHTML = `
-      <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${273306227}/charts/2">
-      </iframe>
-    `;
-
-    let temp = parseFloat(document.getElementById("temp").innerText);
-
-    if (temp > 35) {
-      value.innerHTML = `🔢 Temp: ${temp} °C <br> 📍 Status: Too Hot`;
-      suggestion.innerHTML = "🌡 Move plant to shade";
-      suggestion.style.background = "#ffcdd2";
-    }
-    else if (temp >= 20) {
-      value.innerHTML = `🔢 Temp: ${temp} °C <br> 📍 Status: Normal`;
-      suggestion.innerHTML = "✅ No suggestion needed";
-      suggestion.style.background = "#c8e6c9";
-    }
-    else {
-      value.innerHTML = `🔢 Temp: ${temp} °C <br> 📍 Status: Too Cold`;
-      suggestion.innerHTML = "❄️ Keep plant warm";
-      suggestion.style.background = "#bbdefb";
-    }
-  }
-
-  // ===== HUMIDITY =====
-  else if (type === "hum") {
-
-    graph.innerHTML = `
-      <iframe width="450" height="260"
-      src="https://thingspeak.com/channels/${273306227}/charts/3">
-      </iframe>
-    `;
-
-    let hum = parseFloat(document.getElementById("hum").innerText);
-
-    if (hum < 40) {
-      value.innerHTML = `🔢 Humidity: ${hum}% <br> 📍 Status: Low`;
-      suggestion.innerHTML = "💧 Increase humidity";
-      suggestion.style.background = "#ffcdd2";
-    }
-    else if (hum <= 70) {
-      value.innerHTML = `🔢 Humidity: ${hum}% <br> 📍 Status: Normal`;
-      suggestion.innerHTML = "✅ No suggestion needed";
-      suggestion.style.background = "#c8e6c9";
-    }
-    else {
-      value.innerHTML = `🔢 Humidity: ${hum}% <br> 📍 Status: High`;
-      suggestion.innerHTML = "⚠️ Reduce moisture";
-      suggestion.style.background = "#bbdefb";
-    }
-  }
-
-  // ===== OVERALL =====
-  else if (type === "health") {
-
-    graph.innerHTML = `<h3>🌿 Overall Plant Status</h3>`;
-
-    let status = document.getElementById("status").innerText;
-
-    value.innerHTML = `📍 Status: ${status}`;
-
-    if (status.includes("Healthy")) {
-      suggestion.innerHTML = "✅ No suggestion needed";
-      suggestion.style.background = "#c8e6c9";
-    }
-    else if (status.includes("Water")) {
-      suggestion.innerHTML = "💧 Water the plant";
-      suggestion.style.background = "#ffcdd2";
-    }
-    else {
-      suggestion.innerHTML = "⚠️ Adjust watering";
-      suggestion.style.background = "#bbdefb";
-    }
-  }
-
-  // Add animation
-  graph.classList.add("fade-in");
-  value.classList.add("fade-in");
-  suggestion.classList.add("fade-in");
-}
-
-
-// ================= PUMP CONTROL =================
-function turnPumpOn() {
-  fetch(`https://api.thingspeak.com/update?api_key=${F261E1E08O9YKNNU}&field4=1`);
-  document.getElementById("pumpStatus").innerText = "Status: ON 💧";
-}
-
-function turnPumpOff() {
-  fetch(`https://api.thingspeak.com/update?api_key=${F261E1E08O9YKNNU}&field4=0`);
-  document.getElementById("pumpStatus").innerText = "Status: OFF ⛔";
-}
 
