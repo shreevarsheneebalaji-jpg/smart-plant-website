@@ -2,66 +2,184 @@
 <html>
 <head>
   <title>Smart Plant Monitoring</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f3e8ff;
+    }
+
+    h1 {
+      color: #6a0dad;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 220px);
+      gap: 30px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .box {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      border: 3px solid #6a0dad;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #c084fc;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+
 </head>
 
 <body>
 
-  <h1>🌱 Smart Plant Monitoring System</h1>
+<h1>🌱 Smart Plant Monitoring</h1>
 
-  <!-- SENSOR CARDS -->
-  <div class="card-container">
+<!-- HOME -->
+<div id="home" class="section">
+  <div class="grid">
+    <div class="box">Soil</div>
+    <div class="box">Temperature</div>
+    <div class="box">Humidity</div>
+    <div class="box">Overall</div>
+  </div>
+</div>
 
-    <div class="card">
-      <h2>Soil Moisture</h2>
-      <p id="soil">--</p>
-    </div>
+<!-- ANALYSIS -->
+<!-- ANALYSIS -->
+<div id="analysis" class="section">
 
-    <div class="card">
-      <h2>Temperature</h2>
-      <p id="temp">--</p>
-    </div>
+  <h2>📊 Analysis Page</h2>
 
-    <div class="card">
-      <h2>Humidity</h2>
-      <p id="hum">--</p>
-    </div>
+  <button onclick="showData(1,'soil')">Soil</button>
+  <button onclick="showData(2,'temp')">Temperature</button>
+  <button onclick="showData(3,'hum')">Humidity</button>
 
+  <!-- GRAPH -->
+  <div id="graphBox" style="margin-top:20px; background:white; padding:20px;">
+    <h3>Graph</h3>
+    <div id="graph">Click a button</div>
   </div>
 
-  <!-- HEALTH CARD -->
-  <div class="health-card premium">
-    <h2>🌿 Plant Health</h2>
+  <h3 id="status">Status: --</h3>
+  <h3 id="suggestion">Suggestion: --</h3>
+  <h3 id="prediction">Prediction: --</h3>
 
-    <div class="progress-circle">
-      <span id="healthScore">0%</span>
-    </div>
+</div>
 
-    <p id="healthStatus">Checking...</p>
-  </div>
 
-  <!-- PREDICTION -->
-  <div class="prediction-box">
-    <h3>📈 Future Prediction</h3>
-    <p id="prediction">Loading...</p>
-  </div>
+<!-- PUMP -->
+<div id="pump" class="section">
 
-  <!-- PUMP CONTROL -->
-  <div class="pump-control">
-    <h2>🚰 Pump Control</h2>
+  <h2>🚰 Pump Control</h2>
 
-    <button id="pumpBtn" onclick="togglePump()">Turn ON</button>
+  <!-- BUTTONS -->
+  <button onclick="pumpOn()" style="background:green; color:white; padding:15px; border:none; border-radius:20px;">
+    ON
+  </button>
 
-    <p id="pumpStatus">Status: OFF ❌</p>
-  </div>
+  <button onclick="pumpOff()" style="background:red; color:white; padding:15px; border:none; border-radius:20px;">
+    OFF
+  </button>
 
-  <!-- ALERT -->
-  <div id="customAlert" class="alert-box"></div>
+  <!-- STATUS -->
+  <h3 id="pumpStatus">Pump is OFF ❌</h3>
 
-  <script src="script.js"></script>
+</div>
+
+
+<!-- NAV -->
+<div>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('analysis')">Analysis</button>
+  <button onclick="showPage('pump')">Pump</button>
+</div>
+
+<script>
+
+// NAVIGATION
+function showPage(page) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("analysis").style.display = "none";
+  document.getElementById("pump").style.display = "none";
+
+  document.getElementById(page).style.display = "block";
+}
+
+// DEFAULT PAGE
+window.onload = function() {
+  showPage("home");
+};
+
+// THINGSPEAK
+const channelID = "YOUR_CHANNEL_ID";
+const readAPI = "YOUR_READ_API_KEY";
+
+// ANALYSIS FUNCTION
+function showData(field, type) {
+
+  document.getElementById("graph").innerHTML =
+    `<iframe width="100%" height="300"
+     src="https://thingspeak.com/channels/${channelID}/charts/${field}?api_key=${readAPI}">
+     </iframe>`;
+
+  if (type === "soil") {
+    status.innerText = "Soil is Dry";
+    suggestion.innerText = "Water the plant";
+    prediction.innerText = "May dry soon";
+  }
+
+  else if (type === "temp") {
+    status.innerText = "Temperature Normal";
+    suggestion.innerText = "No action needed";
+    prediction.innerText = "Stable";
+  }
+
+  else {
+    status.innerText = "Humidity Good";
+    suggestion.innerText = "Maintain";
+    prediction.innerText = "Stable";
+  }
+}
+// PUMP CONTROL
+function pumpOn() {
+  document.getElementById("pumpStatus").innerText = "Pump is ON ✅";
+}
+
+function pumpOff() {
+  document.getElementById("pumpStatus").innerText = "Pump is OFF ❌";
+}
+
+
+</script>
+
+
+</script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
 
 
 
